@@ -93,6 +93,7 @@ Create a file with `.slurm` or `.sh` extension:
 #SBATCH --job-name=my_job          # Job name
 #SBATCH --partition=gpu            # Partition name
 #SBATCH --account=your_account     # Account name
+#SBATCH --requeue                  # Requeue the job if it fails/preempted
 #SBATCH --nodes=1                  # Number of nodes
 #SBATCH --cpus-per-task=8          # CPU cores per task
 #SBATCH --mem=32G                  # Memory per node

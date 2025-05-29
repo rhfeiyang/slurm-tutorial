@@ -5,8 +5,10 @@ A concise guide to using SLURM (Simple Linux Utility for Resource Management) fo
 ## Table of Contents
 - [Prerequisites](#prerequisites)
 - [Common Commands](#common-commands)
-- [Resource Allocation](#resource-allocation)
-- [Batch Job Submission](#batch-job-submission)
+- [Resource Allocation and Job Execution](#resource-allocation-and-job-execution)
+  - [Interactive Jobs](#interactive-jobs-for-debugging)
+  - [Direct Command Execution with srun](#direct-command-execution-with-srun)
+  - [Batch Job Submission](#batch-job-submission)
 - [Best Practices](#best-practices)
 
 ## Prerequisites
@@ -54,7 +56,7 @@ scontrol update JobId=jobid TimeLimit=10:00:00    # Modify time limit
 scontrol update JobId=jobid Partition=newpartition # Change partition
 ```
 
-## Resource Allocation
+## Resource Allocation and Job Execution
 
 ### Interactive Jobs (for debugging)
 
@@ -72,6 +74,20 @@ salloc -N 1 -c 8 --gres=gpu:1 --mem=32G -t 4:00:00
 salloc -N 1 -c 8 --gres=gpu:v100:1 --mem=32G -t 4:00:00
 salloc -N 1 -c 8 --gres=gpu:a100:1 --mem=64G -t 4:00:00
 ```
+Then you can ssh into the allocated node with `ssh <node_name>`.
+
+### Direct Command Execution with srun
+
+`srun` allows you to run commands directly on allocated resources without needing an interactive shell.
+
+#### Common srun Options
+```bash
+# Run with GPU
+srun -N 1 -c 8 --gres=gpu:1 --mem=32G -t 2:00:00 nvidia-smi
+
+# Run Python script directly
+srun -N 1 -c 8 --gres=gpu:1 --mem=32G -t 4:00:00 python train.py
+```
 
 ### Parameter Explanations
 - `-N 1`: Number of nodes
@@ -82,9 +98,9 @@ salloc -N 1 -c 8 --gres=gpu:a100:1 --mem=64G -t 4:00:00
 - `-p partition_name`: Specify partition
 - `-A account_name`: Specify account
 
-## Batch Job Submission
+### Batch Job Submission
 
-### Create a SLURM Script
+#### Create a SLURM Script
 
 Create a file with `.slurm` or `.sh` extension:
 
@@ -117,12 +133,12 @@ python your_script.py
 echo "Job completed at $(date)"
 ```
 
-### Submit the Job
+#### Submit the Job
 ```bash
 sbatch your_script.slurm
 ```
 
-### Common SBATCH Options
+#### Common SBATCH Options
 
 | Option | Description | Example |
 |--------|-------------|---------|
